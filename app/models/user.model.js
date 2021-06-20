@@ -7,21 +7,21 @@ const User = function(user) {
   this.active = user.active;
 };
 
-User.create = (newCustomer, result) => {
-  sql.query("INSERT INTO users SET ?", newCustomer, (err, res) => {
+User.create = (newUser, result) => {
+  sql.query("INSERT INTO users SET ?", newUser, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
       return;
     }
 
-    console.log("created user: ", { id: res.insertId, ...newCustomer });
-    result(null, { id: res.insertId, ...newCustomer });
+    console.log("created user: ", { id: res.insertId, ...newUser });
+    result(null, { id: res.insertId, ...newUser });
   });
 };
 
-User.findById = (customerId, result) => {
-  sql.query(`SELECT * FROM users WHERE id = ${customerId}`, (err, res) => {
+User.findById = (userId, result) => {
+  sql.query(`SELECT * FROM users WHERE id = ${userId}`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
