@@ -1,4 +1,4 @@
-Pour tester l'init de l'API :
+Pour tester l'API à ce stade :
 
 1 Installer MySQL
 
@@ -9,3 +9,6 @@ Pour tester l'init de l'API :
 4 Lancer l'API avec node server.js
 
 5 Tester les routes du fichier routes/user.routes.js
+
+
+Je me suis basé sur ce modéle : https://bezkoder.com/node-js-rest-api-express-mysql/
