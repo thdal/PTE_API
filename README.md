@@ -1,4 +1,4 @@
-Pour tester l'init de l'API :
+Pour tester l'API à ce stade :
 
 1 Installer MySQL
 
