@@ -1,3 +1,5 @@
+![alt text](https://github.com/thdal/PTE_API/blob/ec72051e417147d852c788e5152f36d7ad08f0b1/model.png)
+
 Pour tester l'API à ce stade :
 
 1 Installer MySQL
