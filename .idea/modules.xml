@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/PTE_API.iml" filepath="$PROJECT_DIR$/.idea/PTE_API.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../PTE_APPLICATION_WEB/.idea/PTE_APPLICATION_WEB.iml" filepath="$PROJECT_DIR$/../PTE_APPLICATION_WEB/.idea/PTE_APPLICATION_WEB.iml" />
     </modules>
   </component>
 </project>

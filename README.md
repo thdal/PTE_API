@@ -6,6 +6,8 @@ Pour tester l'API à ce stade :
 
 3 Configurer le fichier app/config/db.config.js pour votre connexion
 
+installer cors
+
 4 Lancer l'API avec node server.js
 
 5 Tester les routes du fichier routes/user.routes.js

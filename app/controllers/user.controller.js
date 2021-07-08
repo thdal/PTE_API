@@ -8,12 +8,13 @@ exports.create = (req, res) => {
       message: "Content can not be empty!"
     });
   }
-
   // Create a User
   const user = new User({
+    firstName: req.body.firstName,
+    lastName : req.body.lastName,
+    profile: req.body.profile,
     email: req.body.email,
-    name: req.body.name,
-    active: req.body.active
+    password: req.body.password
   });
 
   // Save User in the database
@@ -23,7 +24,17 @@ exports.create = (req, res) => {
         message:
           err.message || "Some error occurred while creating the User."
       });
-    else res.send(data);
+    else{
+      //Associates the profile with the user
+      User.insertUserProfile(data.id, data.profile, (err, data) => {
+        if (err)
+          res.status(500).send({
+            message:
+                err.message || "Some error occurred while inserting the user profile."
+          });
+      });
+      res.send(data);
+    }
   });
 };
 
@@ -36,6 +47,35 @@ exports.findAll = (req, res) => {
           err.message || "Some error occurred while retrieving users."
       });
     else res.send(data);
+  });
+};
+
+// Find a single User with a userId
+exports.login = (req, res) => {
+  // Validate request
+  if (!req.body) {
+    res.status(400).send({
+      message: "Content can not be empty!"
+    });
+  }
+  // Create a tmp User
+  const user = new User({
+    email: req.body.email,
+    password: req.body.password
+  });
+
+  User.login(user, (err, data) => {
+    if (err) {
+      if (err.kind === "not_found") {
+        res.status(404).send({
+          message: `User not found.`
+        });
+      } else {
+        res.status(500).send({
+          message: "Error retrieving User."
+        });
+      }
+    } else res.send(data);
   });
 };
 

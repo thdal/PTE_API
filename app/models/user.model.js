@@ -2,21 +2,58 @@ const sql = require("./db.js");
 
 // constructor
 const User = function(user) {
+  this.firstName = user.firstName;
+  this.lastName = user.lastName;
+  this.profile = user.profile;
   this.email = user.email;
-  this.name = user.name;
-  this.active = user.active;
+  this.password = user.password;
 };
 
 User.create = (newUser, result) => {
-  sql.query("INSERT INTO users SET ?", newUser, (err, res) => {
+  let reqSql = "INSERT INTO users (firstName, lastName, email, password ) VALUES ? ";
+  let record = [[newUser.firstName, newUser.lastName, newUser.email, newUser.password]];
+  sql.query(reqSql, [record] , (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+    console.log("created user: ", { id: res.insertId, ...newUser });
+    result(null, { id: res.insertId, ...newUser });
+  });
+};
+
+User.insertUserProfile = (userId, profileName, result) => {
+  sql.query(`INSERT INTO user_profile (profile_id, user_id) VALUES (
+    (SELECT id from profile WHERE profile_name = '${profileName}'),
+     '${userId}'
+     )`, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+    console.log("Inserted user profile: ", { user_id: userId, profile: profileName });
+    result(null, { user_id: userId, profile: profileName });
+  });
+};
+
+User.login = (userTmp, result) => {
+  sql.query(`SELECT * FROM users WHERE email = '${userTmp.email}' AND password = '${userTmp.password}'`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
       return;
     }
 
-    console.log("created user: ", { id: res.insertId, ...newUser });
-    result(null, { id: res.insertId, ...newUser });
+    if (res.length) {
+      console.log("found user: ", res[0]);
+      result(null, res[0]);
+      return;
+    }
+
+    // not found User with the id
+    result({ kind: "not_found" }, null);
   });
 };
 
@@ -54,8 +91,8 @@ User.getAll = result => {
 
 User.updateById = (id, user, result) => {
   sql.query(
-    "UPDATE users SET email = ?, name = ?, active = ? WHERE id = ?",
-    [user.email, user.name, user.active, id],
+    "UPDATE users SET email = ?, password = ?, WHERE id = ?",
+    [user.email, user.password, id],
     (err, res) => {
       if (err) {
         console.log("error: ", err);

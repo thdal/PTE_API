@@ -1,24 +1,25 @@
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS user_profiles;
-DROP TABLE IF EXISTS profiles;
+DROP TABLE IF EXISTS user_profile;
+DROP TABLE IF EXISTS profile;
 SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE IF NOT EXISTS `users` (
   id int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  firstName varchar(255) NOT NULL,
+  lastName varchar(255) NOT NULL,
   email varchar(255) NOT NULL,
-  name varchar(255) NOT NULL,
-  active BOOLEAN DEFAULT false
+  password varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
-CREATE TABLE IF NOT EXISTS `profiles` (
+CREATE TABLE IF NOT EXISTS `profile` (
   id int NOT NULL PRIMARY KEY AUTO_INCREMENT,
   profile_name varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
-CREATE TABLE IF NOT EXISTS `user_profiles` (
+CREATE TABLE IF NOT EXISTS `user_profile` (
   profile_id int NOT NULL,
   user_id int NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users(id),
-  FOREIGN KEY (profile_id) REFERENCES profiles(id)
+  FOREIGN KEY (profile_id) REFERENCES profile(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
