@@ -23,23 +23,20 @@ User.create = (newUser, result) => {
   });
 };
 
-User.insertUserProfile = (userId, profileName, result) => {
-  sql.query(`INSERT INTO user_profile (profile_id, user_id) VALUES (
-    (SELECT id from profile WHERE profile_name = '${profileName}'),
-     '${userId}'
-     )`, (err, res) => {
+User.insertUserProfile = (userId, profileId, result) => {
+  sql.query(`INSERT INTO user_profile (profile_id, user_id) VALUES ('${profileId}','${userId}')`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
       return;
     }
-    console.log("Inserted user profile: ", { user_id: userId, profile: profileName });
-    result(null, { user_id: userId, profile: profileName });
+    console.log("Inserted user profile: ", { user_id: userId, profile_id: profileId });
+    result(null, { user_id: userId, profile_id: profileId });
   });
 };
 
 User.login = (userTmp, result) => {
-  sql.query(`SELECT * FROM users WHERE email = '${userTmp.email}' AND password = '${userTmp.password}'`, (err, res) => {
+  sql.query(`SELECT id, firstName, email, up.profile_id FROM users JOIN user_profile up on up.user_id = users.id WHERE email = '${userTmp.email}' AND password = '${userTmp.password}' `, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -85,6 +82,19 @@ User.getAll = result => {
     }
 
     console.log("users: ", res);
+    result(null, res);
+  });
+};
+
+User.getAllUserProfiles = result => {
+  sql.query("SELECT * FROM profile", (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(null, err);
+      return;
+    }
+
+    console.log("UserProfiles: ", res);
     result(null, res);
   });
 };

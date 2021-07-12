@@ -50,6 +50,18 @@ exports.findAll = (req, res) => {
   });
 };
 
+// Retrieve all user profiles from the database.
+exports.findAllUserProfiles = (req, res) => {
+  User.getAllUserProfiles((err, data) => {
+    if (err)
+      res.status(500).send({
+        message:
+            err.message || "Some error occurred while retrieving user profiles."
+      });
+    else res.send(data);
+  });
+};
+
 // Find a single User with a userId
 exports.login = (req, res) => {
   // Validate request
