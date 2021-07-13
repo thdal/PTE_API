@@ -1,7 +1,7 @@
 INSERT INTO profile (profile_name) VALUES ('Organisateur');
 INSERT INTO profile (profile_name) VALUES ('Visiteur');
 
-INSERT INTO users (email, password) VALUES ('organisateur@epsi.fr', 'organisateur');
+INSERT INTO users (firstName, lastName, email, password) VALUES ('orgaName', 'orgaName', 'organisateur@epsi.fr', 'organisateur');
 
 INSERT INTO user_profile (profile_id, user_id) VALUES(
  (select id from profile where profile_name = 'organisateur') ,

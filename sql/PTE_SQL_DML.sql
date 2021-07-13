@@ -2,6 +2,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS user_profile;
 DROP TABLE IF EXISTS profile;
+DROP TABLE IF EXISTS evenements;
 SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE IF NOT EXISTS `users` (
@@ -43,6 +44,8 @@ CREATE TABLE IF NOT EXISTS `evenements` (
   eventDescription varchar(255),
   typeEventId int NOT NULL,
   canalEventId int NOT NULL,
+  userId int NOT NULL,
+  FOREIGN KEY (userId) REFERENCES users(id),
   FOREIGN KEY (typeEventId) REFERENCES type_evenement(id),
   FOREIGN KEY (canalEventId) REFERENCES canal_evenement(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
