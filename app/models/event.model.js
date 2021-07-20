@@ -68,7 +68,7 @@ Event.getAll = result => {
 
 Event.getAllByType = (typeId, userId, result) => {
     let reqSql = `SELECT * FROM evenements WHERE typeEventId = ${typeId}`
-    if(userId != false){
+    if(userId != 'false'){
         reqSql = reqSql + " AND userId = " + userId
     }
     sql.query(reqSql, (err, res) => {
@@ -91,7 +91,7 @@ Event.getAllByType = (typeId, userId, result) => {
 
 Event.getAllByCanal = (canalId, userId, result) => {
     let reqSql = `SELECT * FROM evenements WHERE canalEventId = ${canalId}`
-    if(userId != false){
+    if(userId != 'false'){
         reqSql = reqSql + " AND userId = " + userId
     }
     sql.query(reqSql , (err, res) => {
