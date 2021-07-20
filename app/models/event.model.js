@@ -1,4 +1,5 @@
-const sql = require("./db.js");
+//const sql = require("./db.js");
+import sql from "./db.js"
 
 // constructor
 const Event = function(event) {
@@ -65,9 +66,12 @@ Event.getAll = result => {
     });
 };
 
-Event.getAllByType = (typeId, result) => {
-
-    sql.query(`SELECT * FROM evenements WHERE typeEventId = ${typeId}`, (err, res) => {
+Event.getAllByType = (typeId, userId, result) => {
+    let reqSql = `SELECT * FROM evenements WHERE typeEventId = ${typeId}`
+    if(userId != false){
+        reqSql = reqSql + " AND userId = " + userId
+    }
+    sql.query(reqSql, (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(null, err);
@@ -85,8 +89,12 @@ Event.getAllByType = (typeId, result) => {
     });
 };
 
-Event.getAllByCanal = (canalId, result) => {
-    sql.query(`SELECT * FROM evenements WHERE canalEventId = ${canalId}`, (err, res) => {
+Event.getAllByCanal = (canalId, userId, result) => {
+    let reqSql = `SELECT * FROM evenements WHERE canalEventId = ${canalId}`
+    if(userId != false){
+        reqSql = reqSql + " AND userId = " + userId
+    }
+    sql.query(reqSql , (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(null, err);
@@ -104,4 +112,4 @@ Event.getAllByCanal = (canalId, result) => {
     });
 };
 
-module.exports = Event;
+export default Event;

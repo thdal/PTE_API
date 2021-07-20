@@ -1,4 +1,5 @@
-const sql = require("./db.js");
+//const sql = require("./db.js");
+import sql from "./db.js";
 
 // constructor
 const User = function(user) {
@@ -154,4 +155,4 @@ User.removeAll = result => {
   });
 };
 
-module.exports = User;
+export default User;

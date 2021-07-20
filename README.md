@@ -12,7 +12,14 @@ installer cors
 
 4 Lancer l'API avec node server.js
 
-5 Tester les routes du fichier routes/user.routes.js
+5 Tester les routes du fichier routes/app.routes.js
 
 
 Je me suis basé sur ce modéle : https://bezkoder.com/node-js-rest-api-express-mysql/
+
+
+Pour Jest :
+
+installer jest, profil config ecmascript type: module, installer babel : npm add --dev babel-jest @babel/core @babel/preset-env
+
+et renommer le fichier babel.config.js en babel.config.cjs
