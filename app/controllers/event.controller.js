@@ -1,6 +1,6 @@
 //const Event = require("../models/event.model.js");
 import Event from '../models/event.model.js';
-
+import fs from "fs";
 
 const events = {
     // Create and save a new event
@@ -12,27 +12,117 @@ const events = {
             });
             return;
         }
-        // Create a User
+        var eventJson = JSON.parse(req.body.event)//On récupére le json du formData
+
+        // Create an event
         const event = new Event({
-            eventName: req.body.eventName,
-            eventDate: req.body.eventDate,
-            eventLink: req.body.eventLink,
-            eventAddress: req.body.eventAddress,
-            eventDescription: req.body.eventDescription,
-            typeEventId: req.body.typeEventId,
-            canalEventId: req.body.canalEventId,
-            userId: req.body.userId
+            eventName: eventJson.eventName,
+            eventDate: eventJson.eventDate,
+            eventLink: eventJson.eventLink,
+            eventAddress: eventJson.eventAddress,
+            eventDescription: eventJson.eventDescription,
+            typeEventId: eventJson.typeEventId,
+            canalEventId: eventJson.canalEventId,
+            userId: eventJson.userId,
+            eventImg: eventJson.eventImg
         });
 
         // Save the new event in the database
         Event.create(event, (err, data) => {
-            if (err)
+            if (err){
                 res.status(500).send({
                     message:
                         err.message || "Some error occurred while inserting the new event."
                 });
-            else res.send(data);
+            }
+            //Si on a pas eu de pb pour ajouter l'événement on lui ajoute son dossier image
+            else{
+                //Mais seulement si on utilise une image perso
+                if(data.eventImg && Object.keys(req.files).length != 0){
+                    var eventId = data.id; //L'id de l'événement pour créer un dossier unique
+                    //On enregistre l'image sur le serveur
+                    saveImageEvent(req.files, eventId,(err, dataImg)=>{
+                        if(err){
+                            if(err.kind === "file_too_big"){
+                                res.status(413).send({
+                                  message: "File is too big, choose another one please."
+                                });
+                            }else {
+                                res.status(500).send({
+                                    message: "Error inserting imge from event with id " + eventId
+                                });
+                            }
+                        }else{
+                            res.send(data);
+                        }
+                    });
+                //Si pas d'image
+                }else{
+                    res.send(data);
+                }
+            }
         });
+    },
+
+    // Update an event identified by the eventId in the request
+    update(req, res){
+        // Validate Request
+        if (!req.body) {
+            res.status(400).send({
+                message: "Content can not be empty!"
+            });
+        }
+
+        var eventJson = JSON.parse(req.body.event)//On récupére le json du formData
+        console.log("lerequfiles")
+        console.log(req.files);
+
+        Event.updateById(
+            req.params.eventId,
+            new Event(eventJson),
+            (err, data) => {
+                //Si j'ai une erreur dans l'update
+                if (err) {
+                    if (err.kind === "not_found") {
+                        res.status(404).send({
+                            message: `Not found event with id ${req.params.eventId}.`
+                        });
+                    } else {
+                        res.status(500).send({
+                            message: "Error updating event with id " + req.params.eventId
+                        });
+                    }
+                }
+                //Si pas d'erreur on change l'image si besoin
+                else
+                {
+                    //Mais seulement si on utilise une image perso
+                    //et qu'on a bien une image à insérer
+                    if(data.eventImg && Object.keys(req.files).length != 0){
+                        var eventId = data.id; //L'id de l'événement pour créer un dossier unique
+                        //On enregistre l'image sur le serveur
+                        saveImageEvent(req.files, eventId,(err, dataImg)=>{
+                            if(err){
+                                if(err.kind === "file_too_big"){
+                                    res.status(413).send({
+                                        message: "File is too big, choose another one please."
+                                    });
+                                }else {
+                                    res.status(500).send({
+                                        message: "Error inserting imge from event with id " + eventId
+                                    });
+                                }
+                            }else{
+                                res.send(data);
+                            }
+                        });
+                        //Si pas d'image
+                    }else{
+                        res.send(data);
+                    }
+                }
+            }
+        );
     },
 
     // Retrieve all event types from the database.
@@ -68,6 +158,59 @@ const events = {
                         err.message || "Some error occurred while retrieving events."
                 });
             else res.send(data);
+        });
+    },
+
+    // Retrieve all event from the database.
+    findAllByUser(req, res){
+        Event.getAllByUser(req.params.userId, (err, data) => {
+            if (err)
+                res.status(500).send({
+                    message:
+                        err.message || "Some error occurred while retrieving events."
+                });
+            else res.send(data);
+        });
+    },
+
+    // Retrieve all event from the database.
+    findAllOfTheDay(req, res){
+        Event.getAllOfTheDay((err, data) => {
+            if (err)
+                res.status(500).send({
+                    message:
+                        err.message || "Some error occurred while retrieving events."
+                });
+            else res.send(data);
+        });
+    },
+
+    // Retrieve all event from the database.
+    findAllOfTheDayByUser(req, res){
+        Event.getAllOfTheDayByUser(req.params.userId, (err, data) => {
+            if (err)
+                res.status(500).send({
+                    message:
+                        err.message || "Some error occurred while retrieving events."
+                });
+            else res.send(data);
+        });
+    },
+
+    // Find a single event with a eventId
+    findOne(req, res){
+        Event.findById(req.params.eventId, (err, data) => {
+            if (err) {
+                if (err.kind === "not_found") {
+                    res.status(404).send({
+                        message: `Not found event with id ${req.params.eventId}.`
+                    });
+                } else {
+                    res.status(500).send({
+                        message: "Error retrieving event with id " + req.params.eventId
+                    });
+                }
+            } else res.send(data);
         });
     },
 
@@ -110,5 +253,54 @@ const events = {
             }
         });
     },
+
+    // Delete an event with the specified eventId in the request
+    delete(req, res) {
+        Event.remove(req.params.eventId, (err, data) => {
+            if (err) {
+                if (err.kind === "not_found") {
+                    res.status(404).send({
+                        message: `Not found event with id ${req.params.eventId}.`
+                    });
+                } else {
+                    res.status(500).send({
+                        message: "Could not delete event with id " + req.params.eventId
+                    });
+                }
+            } else res.send({ message: `Event was deleted successfully!` });
+        });
+    },
 }
+
+//Fonction privée on manipule les images de nos événéments
+// Peut être à déplacer dans un nouveau fichier
+function saveImageEvent(file, eventId, result){
+    var file = file.eventImgFile;//eventImgFile, le nom de formData set côté client
+    var fileName = file.originalFilename;
+    var fileNameGeneric = "eventImg.jpg";
+    var fileSize = file.size;
+    var filePath = file.path;
+    //On enregistre pas de fichier trop gros, fileSize en octets ici < 10Mo
+    if((fileSize > 10000000)){
+        result({ kind: "file_too_big" }, null);
+        return;
+    }
+    //On crée un dossier particulier pour chaque événement. (sous la forme: event+eventId)
+    var eventDir = "app/public/eventsImgs/eventId"+eventId;
+
+    if (!fs.existsSync(eventDir)){
+        fs.mkdirSync(eventDir);
+    }
+
+    fs.copyFile(filePath, eventDir + "/" + fileNameGeneric, (err) => {
+        if (err){
+            result(err, null);
+            return;
+        }
+        var msg = filePath + ' was copied to ' + eventDir + "/" + fileNameGeneric;
+        console.log(msg);
+        result(null, msg)
+    });
+}
+
 export default events;

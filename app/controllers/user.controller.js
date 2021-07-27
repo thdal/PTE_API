@@ -1,5 +1,6 @@
 //const User = require("../models/user.model.js");
 import User from '../models/user.model.js';
+import fs from "fs";
 
 const users = {
 
@@ -17,7 +18,8 @@ const users = {
       lastName : req.body.lastName,
       profile: req.body.profile,
       email: req.body.email,
-      password: req.body.password
+      password: req.body.password,
+      genre_id: req.body.genre_id
     });
 
     // Save User in the database
@@ -120,9 +122,11 @@ const users = {
       });
     }
 
+    var userJson = JSON.parse(req.body.user)//On récupére le json du formData
+
     User.updateById(
       req.params.userId,
-      new User(req.body),
+      new User(userJson),
       (err, data) => {
         if (err) {
           if (err.kind === "not_found") {
@@ -134,7 +138,34 @@ const users = {
               message: "Error updating User with id " + req.params.userId
             });
           }
-        } else res.send(data);
+        }
+        //Si pas d'erreur on change l'image si besoin
+        else{
+          //Mais seulement si on utilise une image perso
+          //Et si le fichier n'est pas vide
+          if(data.userImg && Object.keys(req.files).length != 0) {
+            var userId = data.id; //L'id de l'utilisateur pour créer un dossier unique
+            //On enregistre l'image sur le serveur
+            saveImageUser(req.files, userId,(err, dataImg)=>{
+              if(err){
+                if(err.kind === "file_too_big"){
+                  res.status(413).send({
+                    message: "File is too big, choose another one please."
+                  });
+                }else {
+                  res.status(500).send({
+                    message: "Error inserting img from user with id " + userId
+                  });
+                }
+              }else{
+                res.send(data);
+              }
+            });
+            //Si pas d'image
+          }else{
+            res.send(data);
+          }
+        }
       }
     );
   },
@@ -168,6 +199,37 @@ const users = {
       else res.send({ message: `All Users were deleted successfully!` });
     });
   }
+}
+
+//Fonction privée on manipule les images de nos utilisateurs
+// Peut être à déplacer dans un nouveau fichier
+function saveImageUser(file, userId, result){
+  var file = file.userImgFile;//eventImgFile, le nom de formData set côté client
+  var fileName = file.originalFilename;
+  var fileNameGeneric = "userImg.jpg";
+  var fileSize = file.size;
+  var filePath = file.path;
+  //On enregistre pas de fichier trop gros, fileSize en octets ici < 10Mo
+  if((fileSize > 10000000)){
+    result({ kind: "file_too_big" }, null);
+    return;
+  }
+  //On crée un dossier particulier pour chaque événement. (sous la forme: event+eventId)
+  var eventDir = "app/public/usersImgs/userId"+userId;
+
+  if (!fs.existsSync(eventDir)){
+    fs.mkdirSync(eventDir);
+  }
+
+  fs.copyFile(filePath, eventDir + "/" + fileNameGeneric, (err) => {
+    if (err){
+      result(err, null);
+      return;
+    }
+    var msg = filePath + ' was copied to ' + eventDir + "/" + fileNameGeneric;
+    console.log(msg);
+    result(null, msg)
+  });
 }
 
 export default users;

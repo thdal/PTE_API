@@ -8,11 +8,13 @@ const User = function(user) {
   this.profile = user.profile;
   this.email = user.email;
   this.password = user.password;
+  this.genre_id = user.genre_id;
+  this.userImg = user.userImg;
 };
 
 User.create = (newUser, result) => {
-  let reqSql = "INSERT INTO users (firstName, lastName, email, password ) VALUES ? ";
-  let record = [[newUser.firstName, newUser.lastName, newUser.email, newUser.password]];
+  let reqSql = "INSERT INTO users (firstName, lastName, email, password, genre_id ) VALUES ? ";
+  let record = [[newUser.firstName, newUser.lastName, newUser.email, newUser.password, newUser.genre_id]];
   sql.query(reqSql, [record] , (err, res) => {
     if (err) {
       console.log("error: ", err);
@@ -37,7 +39,7 @@ User.insertUserProfile = (userId, profileId, result) => {
 };
 
 User.login = (userTmp, result) => {
-  sql.query(`SELECT id, firstName, email, up.profile_id FROM users JOIN user_profile up on up.user_id = users.id WHERE email = '${userTmp.email}' AND password = '${userTmp.password}' `, (err, res) => {
+  sql.query(`SELECT id, firstName, email, userImg, genre_id, up.profile_id FROM users JOIN user_profile up on up.user_id = users.id WHERE email = '${userTmp.email}' AND password = '${userTmp.password}' `, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -102,8 +104,8 @@ User.getAllUserProfiles = result => {
 
 User.updateById = (id, user, result) => {
   sql.query(
-    "UPDATE users SET email = ?, password = ?, WHERE id = ?",
-    [user.email, user.password, id],
+    "UPDATE users SET email = ?, firstName = ?, lastName = ?, userImg = ? WHERE id = ?",
+    [user.email, user.firstName, user.lastName, user.userImg, id],
     (err, res) => {
       if (err) {
         console.log("error: ", err);

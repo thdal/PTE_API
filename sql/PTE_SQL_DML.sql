@@ -3,14 +3,26 @@ DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS user_profile;
 DROP TABLE IF EXISTS profile;
 DROP TABLE IF EXISTS evenements;
+DROP TABLE IF EXISTS canal_evenement;
+DROP TABLE IF EXISTS type_evenement;
+DROP TABLE IF EXISTS genre;
+
 SET FOREIGN_KEY_CHECKS = 1;
+
+CREATE TABLE IF NOT EXISTS `genre` (
+  id int NOT NULL PRIMARY KEY NOT NULL,
+  genre_name varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE IF NOT EXISTS `users` (
   id int NOT NULL PRIMARY KEY AUTO_INCREMENT,
   firstName varchar(255) NOT NULL,
   lastName varchar(255) NOT NULL,
   email varchar(255) NOT NULL,
-  password varchar(255) NOT NULL
+  password varchar(255) NOT NULL,
+  userImg boolean NOT NULL DEFAULT false,
+  genre_id int NOT NULL,
+  FOREIGN KEY (genre_id) REFERENCES genre(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE IF NOT EXISTS `profile` (
@@ -42,6 +54,7 @@ CREATE TABLE IF NOT EXISTS `evenements` (
   eventLink varchar(255) NOT NULL,
   eventAddress varchar(255) NOT NULL,
   eventDescription varchar(255),
+  eventImg boolean NOT NULL,
   typeEventId int NOT NULL,
   canalEventId int NOT NULL,
   userId int NOT NULL,
