@@ -4,5 +4,5 @@
 # dependencies
 #/node_modules
 
-eventsImgs/
-usersImgs/
+app/public/eventsImgs/*
+
