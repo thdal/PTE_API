@@ -16,22 +16,27 @@ const users = {
     const user = new User({
       firstName: req.body.firstName,
       lastName : req.body.lastName,
-      profile: req.body.profile,
+      profile_id: req.body.profile_id,
       email: req.body.email,
       password: req.body.password,
-      genre_id: req.body.genre_id
+      genre_id: req.body.genre_id,
+      isBanned: req.body.isBanned
     });
 
     // Save User in the database
     User.create(user, (err, data) => {
+      console.log("oncherchel'utilsiateuravant");
+      console.log(user);
       if (err)
         res.status(500).send({
           message:
             err.message || "Some error occurred while creating the User."
         });
       else{
+        console.log("oncherchel'utilsiateur");
+        console.log(data);
         //Associates the profile with the user
-        User.insertUserProfile(data.id, data.profile, (err, data) => {
+        User.insertUserProfile(data.id, data.profile_id, (err, data) => {
           if (err)
             res.status(500).send({
               message:
@@ -50,6 +55,18 @@ const users = {
         res.status(500).send({
           message:
             err.message || "Some error occurred while retrieving users."
+        });
+      else res.send(data);
+    });
+  },
+
+  // Retrieve all Users from the database with profiles.
+  findAllWithProfiles(req, res){
+    User.getAllWithProfiles((err, data) => {
+      if (err)
+        res.status(500).send({
+          message:
+              err.message || "Some error occurred while retrieving users with profiles."
         });
       else res.send(data);
     });
@@ -170,6 +187,64 @@ const users = {
     );
   },
 
+  // Update a User identified by the userId in the request
+  updateFromAdmin(req, res){
+    // Validate Request
+    if (!req.body) {
+      res.status(400).send({
+        message: "Content can not be empty!"
+      });
+    }
+    User.updateByIdFromAdmin(
+        req.params.userId,
+        new User(req.body),
+        (err, data) => {
+          if (err) {
+            if (err.kind === "not_found") {
+              res.status(404).send({
+                message: `Not found User with id ${req.params.userId}.`
+              });
+            } else {
+              res.status(500).send({
+                message: "Error updating User with id " + req.params.userId
+              });
+            }
+          }
+          else{
+              res.send(data);
+          }
+        }
+    );
+  },
+
+  // Update a User profile identified by the userId in the request
+  updateUserProfile(req, res){
+    // Validate Request
+    if (!req.body) {
+      res.status(400).send({
+        message: "Content can not be empty!"
+      });
+    }
+
+    User.updateUserProfile(req.params.userId, req.body.profileId, (err, data) => {
+          if (err) {
+            if (err.kind === "not_found") {
+              res.status(404).send({
+                message: `Not found User with id ${req.params.userId}.`
+              });
+            } else {
+              res.status(500).send({
+                message: "Error updating User with id " + req.params.userId
+              });
+            }
+          }
+          else{
+            res.send(data);
+          }
+        }
+    );
+  },
+
   // Delete a User with the specified userId in the request
   delete(req, res) {
     User.remove(req.params.userId, (err, data) => {
@@ -184,6 +259,23 @@ const users = {
           });
         }
       } else res.send({ message: `User was deleted successfully!` });
+    });
+  },
+
+  // Delete a User with the specified userId in the request
+  deleteUserProfile(req, res) {
+    User.deleteUserProfile(req.params.userId, req.params.profileId, (err, data) => {
+      if (err) {
+        if (err.kind === "not_found") {
+          res.status(404).send({
+            message: `Not found User profile with userId : ${req.params.userId} && profileId : ${req.params.profileId}.`
+          });
+        } else {
+          res.status(500).send({
+            message: "Could not delete User profile with userId : " + req.params.userId + "&& profileId : " + req.params.profileId
+          });
+        }
+      } else res.send({ message: `User Profile was deleted successfully!` });
     });
   },
 

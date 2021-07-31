@@ -1,16 +1,22 @@
-INSERT INTO profile (profile_name) VALUES ('Organisateur');
-INSERT INTO profile (profile_name) VALUES ('Visiteur');
+INSERT INTO profile (profile_name) VALUES (1,'Organisateur');
+INSERT INTO profile (profile_name) VALUES (2,'Visiteur');
+INSERT INTO profile (id, profile_name) VALUES (3, 'Administrateur');
 
 Insert into genre (id, genre_name) VALUES (1, 'F');
 Insert into genre (id, genre_name) VALUES (2, 'H');
 
-INSERT INTO users (firstName, lastName, email, password, genre_id) VALUES ('orgaName', 'orgaName', 'test@epsi.fr', 'organisateur',1);
-INSERT INTO users (firstName, lastName, email, password, genre_id) VALUES ('orgaName', 'orgaName', 'test2@epsi.fr', 'organisateur',2);
+INSERT INTO users (firstName, lastName, email, password, genre_id) VALUES ('orgaName', 'orgaName', 'test@epsi.fr', 'tortue',1);
+INSERT INTO users (firstName, lastName, email, password, genre_id) VALUES ('orgaName', 'orgaName', 'test2@epsi.fr', 'tortue',2);
+INSERT INTO users (firstName, lastName, email, password, genre_id) VALUES ('orgaName', 'orgaName', 'test3@epsi.fr', 'tortue',2);
 
 INSERT INTO user_profile (profile_id, user_id) VALUES(
  (select id from profile where profile_name = 'Organisateur') ,
  (select id from users where email = 'test@epsi.fr')
  );
+ INSERT INTO user_profile (profile_id, user_id) VALUES(
+  (select id from profile where profile_name = 'Administrateur') ,
+  (select id from users where email = 'test3@epsi.fr')
+  );
 
 INSERT INTO type_evenement (typeEventName) VALUES ('Culturel');
 INSERT INTO type_evenement (typeEventName) VALUES ('Artistique');

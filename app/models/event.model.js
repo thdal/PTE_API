@@ -54,6 +54,36 @@ Event.getAllEventCanals = result => {
     });
 };
 
+Event.getAllWithDate = (objDates, result) => {
+    var dateDebut = objDates.dateDebut;
+    var dateFin = objDates.dateFin;
+    sql.query(`SELECT * FROM evenements where eventDate between '${dateDebut} 00:00:00' and '${dateFin} 00:00:00'`, (err, res) => {
+        if (err) {
+            console.log("error: ", err);
+            result(null, err);
+            return;
+        }
+
+        console.log("found evenements with dates: ", res.length, " événements");
+        result(null, res);
+    });
+};
+
+Event.getAllWithDateByUser = (objDates, userId, result) => {
+    var dateDebut = objDates.dateDebut;
+    var dateFin = objDates.dateFin;
+    sql.query(`SELECT * FROM evenements where eventDate between '${dateDebut} 00:00:00' and '${dateFin} 00:00:00' AND userId = ${userId}`, (err, res) => {
+        if (err) {
+            console.log("error: ", err);
+            result(null, err);
+            return;
+        }
+
+        console.log("found evenements with dates: ", res.length, " événements");
+        result(null, res);
+    });
+};
+
 Event.updateById = (id, event, result) => {
     sql.query(
         "UPDATE evenements SET eventName = ?, eventDate = ?, eventLink = ?, eventAddress = ?, eventDescription = ?, typeEventId = ?, canalEventId = ?, eventImg = ? WHERE id = ?",

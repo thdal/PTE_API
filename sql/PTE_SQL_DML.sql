@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   email varchar(255) NOT NULL,
   password varchar(255) NOT NULL,
   userImg boolean NOT NULL DEFAULT false,
+  isBanned boolean NOT NULL DEFAULT false,
   genre_id int NOT NULL,
   FOREIGN KEY (genre_id) REFERENCES genre(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;

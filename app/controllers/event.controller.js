@@ -74,8 +74,6 @@ const events = {
         }
 
         var eventJson = JSON.parse(req.body.event)//On récupére le json du formData
-        console.log("lerequfiles")
-        console.log(req.files);
 
         Event.updateById(
             req.params.eventId,
@@ -161,7 +159,7 @@ const events = {
         });
     },
 
-    // Retrieve all event from the database.
+    // Retrieve all event from the database with userId.
     findAllByUser(req, res){
         Event.getAllByUser(req.params.userId, (err, data) => {
             if (err)
@@ -246,6 +244,63 @@ const events = {
                     res.status(500).send({
                         message:
                             err.message || "Some error occurred while retrieving events by canal."
+                    });
+                }
+            }else {
+                res.send(data);
+            }
+        });
+    },
+
+    // Retrieve all event from the database between dates.
+    findAllWithDate(req, res){
+        if (!req.query.dates) {
+            res.status(400).send({
+                message: "Dates can not be null!"
+            });
+            return;
+        }
+        const objDates = JSON.parse(req.query.dates);
+
+        Event.getAllWithDate(objDates, (err, data) => {
+            if (err) {
+                if (err.kind === "not_found") {
+                    res.status(404).send({
+                        message: `Not found event with date.`
+                    });
+                } else {
+                    res.status(500).send({
+                        message:
+                            err.message || "Some error occurred while retrieving events with date."
+                    });
+                }
+            }else {
+                res.send(data);
+            }
+        });
+    },
+
+    // Retrieve all event from the database between dates with userId.
+    findAllWithDateByUser(req, res){
+
+        if (!req.query.dates) {
+            res.status(400).send({
+                message: "Dates can not be null!"
+            });
+            return;
+        }
+        const objDates = JSON.parse(req.query.dates);
+
+        Event.getAllWithDateByUser(objDates, req.params.userId, (err, data) => {
+            if (err) {
+                if (err.kind === "not_found") {
+                    res.status(404).send({
+                        message: `Not found event with date and userId : ${req.params.userid}.`
+                    });
+                } else {
+                    res.status(500).send({
+                        message:
+                            err.message || "Some error occurred while retrieving events with date with userId."
                     });
                 }
             }else {
