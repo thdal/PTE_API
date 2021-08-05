@@ -23,3 +23,12 @@ Pour Jest :
 installer jest, profil config ecmascript type: module, installer babel : npm add --dev babel-jest @babel/core @babel/preset-env
 
 et renommer le fichier babel.config.js en babel.config.cjs
+
+
+Forever: 
+
+Tuto forever https://blog.bini.io/faire-tourner-une-application-node-js-en-permanence-avec-forever/
+
+lancer avec forever
+
+forever start --uid "custom-name" server.js prod

@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `evenements` (
   eventLink varchar(255) NOT NULL,
   eventAddress varchar(255) NOT NULL,
   eventDescription varchar(255),
-  eventImg boolean NOT NULL,
+  eventImg boolean NOT NULL DEFAULT false,
   typeEventId int NOT NULL,
   canalEventId int NOT NULL,
   userId int NOT NULL,

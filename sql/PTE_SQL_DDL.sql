@@ -1,5 +1,5 @@
-INSERT INTO profile (profile_name) VALUES (1,'Organisateur');
-INSERT INTO profile (profile_name) VALUES (2,'Visiteur');
+INSERT INTO profile (id, profile_name) VALUES (1,'Organisateur');
+INSERT INTO profile (id, profile_name) VALUES (2,'Participant');
 INSERT INTO profile (id, profile_name) VALUES (3, 'Administrateur');
 
 Insert into genre (id, genre_name) VALUES (1, 'F');
@@ -13,24 +13,28 @@ INSERT INTO user_profile (profile_id, user_id) VALUES(
  (select id from profile where profile_name = 'Organisateur') ,
  (select id from users where email = 'test@epsi.fr')
  );
+  INSERT INTO user_profile (profile_id, user_id) VALUES(
+   (select id from profile where profile_name = 'Participant') ,
+   (select id from users where email = 'test2@epsi.fr')
+   );
  INSERT INTO user_profile (profile_id, user_id) VALUES(
   (select id from profile where profile_name = 'Administrateur') ,
   (select id from users where email = 'test3@epsi.fr')
   );
 
-INSERT INTO type_evenement (typeEventName) VALUES ('Culturel');
-INSERT INTO type_evenement (typeEventName) VALUES ('Artistique');
-INSERT INTO type_evenement (typeEventName) VALUES ('Sportif');
-INSERT INTO type_evenement (typeEventName) VALUES ('Pédagogique');
-INSERT INTO type_evenement (typeEventName) VALUES ('Geek');
+INSERT INTO type_evenement (id,typeEventName) VALUES (1,'Culturel');
+INSERT INTO type_evenement (id,typeEventName) VALUES (2,'Artistique');
+INSERT INTO type_evenement (id,typeEventName) VALUES (3,'Sportif');
+INSERT INTO type_evenement (id,typeEventName) VALUES (4,'Pédagogique');
+INSERT INTO type_evenement (id,typeEventName) VALUES (5,'Geek');
 
 
-INSERT INTO canal_evenement (canalEventName) VALUES ('Youtube');
-INSERT INTO canal_evenement (canalEventName) VALUES ('Facebook');
-INSERT INTO canal_evenement (canalEventName) VALUES ('Twitch');
-INSERT INTO canal_evenement (canalEventName) VALUES ('Instagram');
-INSERT INTO canal_evenement (canalEventName) VALUES ('Zoom');
-INSERT INTO canal_evenement (canalEventName) VALUES ('Snapchat');
+INSERT INTO canal_evenement (id,canalEventName) VALUES (1,'Youtube');
+INSERT INTO canal_evenement (id,canalEventName) VALUES (2,'Facebook');
+INSERT INTO canal_evenement (id,canalEventName) VALUES (3,'Twitch');
+INSERT INTO canal_evenement (id,canalEventName) VALUES (4,'Instagram');
+INSERT INTO canal_evenement (id,canalEventName) VALUES (5,'Zoom');
+INSERT INTO canal_evenement (id,canalEventName) VALUES (6,'Snapchat');
 
 
 insert into evenements (eventName, eventdate, eventLink,  eventAddress, eventDescription,

@@ -20,21 +20,18 @@ const users = {
       email: req.body.email,
       password: req.body.password,
       genre_id: req.body.genre_id,
+      userImg: req.body.userImg,
       isBanned: req.body.isBanned
     });
 
     // Save User in the database
     User.create(user, (err, data) => {
-      console.log("oncherchel'utilsiateuravant");
-      console.log(user);
       if (err)
         res.status(500).send({
           message:
             err.message || "Some error occurred while creating the User."
         });
       else{
-        console.log("oncherchel'utilsiateur");
-        console.log(data);
         //Associates the profile with the user
         User.insertUserProfile(data.id, data.profile_id, (err, data) => {
           if (err)
@@ -258,7 +255,18 @@ const users = {
             message: "Could not delete User with id " + req.params.userId
           });
         }
-      } else res.send({ message: `User was deleted successfully!` });
+      } else{
+      delUserImage(req.params.userId,(err, dataImg)=>{
+        if(err){
+          res.status(500).send({
+            message: "Error deleting img from user with id " + userId
+          });
+        }else{
+          //res.send({ message: `User was deleted successfully!` });
+        }
+      });
+        res.send({ message: `User was deleted successfully!` });
+      }
     });
   },
 
@@ -307,21 +315,39 @@ function saveImageUser(file, userId, result){
     return;
   }
   //On crée un dossier particulier pour chaque événement. (sous la forme: event+eventId)
-  var eventDir = "app/public/usersImgs/userId"+userId;
+  var userDir = "app/public/usersImgs/userId"+userId;
 
-  if (!fs.existsSync(eventDir)){
-    fs.mkdirSync(eventDir);
+  if (!fs.existsSync(userDir)){
+    fs.mkdirSync(userDir);
   }
 
-  fs.copyFile(filePath, eventDir + "/" + fileNameGeneric, (err) => {
+  fs.copyFile(filePath, userDir + "/" + fileNameGeneric, (err) => {
     if (err){
       result(err, null);
       return;
     }
-    var msg = filePath + ' was copied to ' + eventDir + "/" + fileNameGeneric;
+    var msg = filePath + ' was copied to ' + userDir + "/" + fileNameGeneric;
     console.log(msg);
     result(null, msg)
   });
+}
+
+//Fonction privée on supprime l'image associé à un utilisateur
+function delUserImage(userId, result){
+
+  var userDir = "app/public/usersImgs/userId"+userId;
+
+  if (fs.existsSync(userDir)) {
+    fs.rmdirSync(userDir, {recursive: true}, (err) =>{
+      if (err){
+        result(err, null);
+        return;
+      }
+    })
+    var msg = userDir + ' was deleted successfully.';
+    console.log(msg);
+    result(null, msg)
+  }
 }
 
 export default users;

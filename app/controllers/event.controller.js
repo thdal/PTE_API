@@ -150,48 +150,72 @@ const events = {
     // Retrieve all event from the database.
     findAll(req, res){
         Event.getAll((err, data) => {
-            if (err)
-                res.status(500).send({
-                    message:
-                        err.message || "Some error occurred while retrieving events."
-                });
-            else res.send(data);
+            if (err){
+                if (err.kind === "not_found") {
+                    res.status(404).send({
+                        message: `0 event found`
+                    });
+                }else{
+                    res.status(500).send({
+                        message:
+                            err.message || "Some error occurred while retrieving events."
+                    });
+                }
+            } else res.send(data);
         });
     },
 
     // Retrieve all event from the database with userId.
     findAllByUser(req, res){
         Event.getAllByUser(req.params.userId, (err, data) => {
-            if (err)
-                res.status(500).send({
-                    message:
-                        err.message || "Some error occurred while retrieving events."
-                });
-            else res.send(data);
+            if (err){
+                if (err.kind === "not_found") {
+                    res.status(404).send({
+                        message: `0 event found`
+                    });
+                }else{
+                    res.status(500).send({
+                        message:
+                            err.message || "Some error occurred while retrieving events."
+                    });
+                }
+            } else res.send(data);
         });
     },
 
     // Retrieve all event from the database.
     findAllOfTheDay(req, res){
         Event.getAllOfTheDay((err, data) => {
-            if (err)
-                res.status(500).send({
-                    message:
-                        err.message || "Some error occurred while retrieving events."
-                });
-            else res.send(data);
+            if (err){
+                if (err.kind === "not_found") {
+                    res.status(404).send({
+                        message: `Not found event of the day.`
+                    });
+                }else{
+                    res.status(500).send({
+                        message:
+                            err.message || "Some error occurred while retrieving events."
+                    });
+                }
+            } else res.send(data);
         });
     },
 
     // Retrieve all event from the database.
     findAllOfTheDayByUser(req, res){
         Event.getAllOfTheDayByUser(req.params.userId, (err, data) => {
-            if (err)
-                res.status(500).send({
-                    message:
-                        err.message || "Some error occurred while retrieving events."
-                });
-            else res.send(data);
+            if (err){
+                if (err.kind === "not_found") {
+                    res.status(404).send({
+                        message: `Not found event of the day by user.`
+                    });
+                }else{
+                    res.status(500).send({
+                        message:
+                            err.message || "Some error occurred while retrieving events."
+                    });
+                }
+            } else res.send(data);
         });
     },
 
@@ -322,7 +346,18 @@ const events = {
                         message: "Could not delete event with id " + req.params.eventId
                     });
                 }
-            } else res.send({ message: `Event was deleted successfully!` });
+            } else{
+                delImageEvent(req.params.eventId,(err, dataImg)=>{
+                    if(err){
+                            res.status(500).send({
+                                message: "Error deleting image from event with id " + eventId
+                            });
+                    }else{
+                        //res.send({ message: `Event was deleted successfully!` });
+                    }
+                });
+                res.send({ message: `Event was deleted successfully!` });
+            }
         });
     },
 }
@@ -356,6 +391,22 @@ function saveImageEvent(file, eventId, result){
         console.log(msg);
         result(null, msg)
     });
+}
+
+//Fonction privée on supprime l'image associé à un événement
+function delImageEvent(eventId, result){
+    var eventDir = "app/public/eventsImgs/eventId"+eventId;
+    if (fs.existsSync(eventDir)) {
+        fs.rmdirSync(eventDir, {recursive: true}, (err) =>{
+            if (err){
+                result(err, null);
+                return;
+            }
+        })
+        var msg = eventDir + ' was deleted successfully.';
+        console.log(msg);
+        result(null, msg)
+    }
 }
 
 export default events;

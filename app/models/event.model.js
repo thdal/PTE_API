@@ -115,6 +115,12 @@ Event.getAll = result => {
             return;
         }
 
+        if (!res.length) {
+            // not found User with the id
+            result({ kind: "not_found" }, null);
+            return;
+        }
+
         console.log("found evenements: ", res.length, " événements");
         result(null, res);
     });
@@ -125,6 +131,12 @@ Event.getAllByUser = (userId, result) => {
         if (err) {
             console.log("error: ", err);
             result(null, err);
+            return;
+        }
+
+        if (!res.length) {
+            // not found User with the id
+            result({ kind: "not_found" }, null);
             return;
         }
 
@@ -141,6 +153,12 @@ Event.getAllOfTheDay = result => {
             return;
         }
 
+        if (!res.length) {
+            // not found User with the id
+            result({ kind: "not_found" }, null);
+            return;
+        }
+
         console.log("found evenements of the day: ", res.length, " événements");
         result(null, res);
     });
@@ -151,6 +169,12 @@ Event.getAllOfTheDayByUser = (userId, result) => {
         if (err) {
             console.log("error: ", err);
             result(null, err);
+            return;
+        }
+
+        if (!res.length) {
+            // not found User with the id
+            result({ kind: "not_found" }, null);
             return;
         }
 
