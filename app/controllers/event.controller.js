@@ -12,6 +12,7 @@ const events = {
             });
             return;
         }
+
         var eventJson = JSON.parse(req.body.event)//On récupére le json du formData
 
         // Create an event

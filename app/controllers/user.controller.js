@@ -1,9 +1,10 @@
 //const User = require("../models/user.model.js");
 import User from '../models/user.model.js';
 import fs from "fs";
+import bcrypt from 'bcrypt';
+
 
 const users = {
-
   // Create and Save a new User
   create(req, res){
     // Validate request
@@ -24,24 +25,28 @@ const users = {
       isBanned: req.body.isBanned
     });
 
-    // Save User in the database
-    User.create(user, (err, data) => {
-      if (err)
-        res.status(500).send({
-          message:
-            err.message || "Some error occurred while creating the User."
-        });
-      else{
-        //Associates the profile with the user
-        User.insertUserProfile(data.id, data.profile_id, (err, data) => {
-          if (err)
-            res.status(500).send({
-              message:
-                  err.message || "Some error occurred while inserting the user profile."
-            });
-        });
-        res.send(data);
-      }
+    // On hash le mot de passe
+    hashMDP(req.body.password, callback => {
+        user.password = callback.hashedPassword;
+      // Save User in the database
+      User.create(user, (err, data) => {
+        if (err)
+          res.status(500).send({
+            message:
+              err.message || "Some error occurred while creating the User."
+          });
+        else{
+          //Associates the profile with the user
+          User.insertUserProfile(data.id, data.profile_id, (err, data) => {
+            if (err)
+              res.status(500).send({
+                message:
+                    err.message || "Some error occurred while inserting the user profile."
+              });
+          });
+          res.send(data);
+        }
+      });
     });
   },
 
@@ -95,23 +100,59 @@ const users = {
       password: req.body.password
     });
 
-    User.login(user, (err, data) => {
-      if (err) {
-        if (err.kind === "not_found") {
-          res.status(404).send({
-            message: `User not found.`
-          });
-        } else {
-          res.status(500).send({
-            message: "Error retrieving User."
-          });
-        }
-      } else res.send(data);
+    //On vérifie qu'un mot de passe existe pour cet email en base
+    User.getPassword(req.body.email, (errPW,dataPW)=>{
+      if (errPW) {
+          if (errPW.kind === "not_found") {
+            res.status(404).send({
+              message: `Email invalid.`
+            });
+          }else{
+            res.status(500).send({
+              message:
+                  err.message || "Some error occurred while retrieving user password with email."
+            });
+          }
+      }
+      //Si on a bien un mot de passe pour cet email
+      else{
+        //On vérifie que le hash correspond bien au mot de passe envoyé
+        compareHashedMDP(dataPW.password, user.password, callback => {
+          //Si oui on récupére notre utilisateur
+          if(callback.passwordIsValid){
+              user.password = dataPW.password;
+            User.login(user, (errLogin, dataLogin) => {
+              if (errLogin) {
+                if (errLogin.kind === "not_found") {
+                  res.status(404).send({
+                    message: `User not found.`
+                  });
+                } else {
+                  res.status(500).send({
+                    message: "Error retrieving User."
+                  });
+                }
+              } else res.send(dataLogin);
+            });
+          }
+          //Si non le mot de passe ne correspond pas
+          else{
+            res.status(404).send({
+              message: `Invalid password.`
+            });
+          }
+        });
+      }
     });
   },
 
   // Find a single User with a userId
   findOne(req, res){
+    if (!req.params.userId) {
+      res.status(400).send({
+        message: "UserId can not be null!"
+      });
+    }
     User.findById(req.params.userId, (err, data) => {
       if (err) {
         if (err.kind === "not_found") {
@@ -348,6 +389,17 @@ function delUserImage(userId, result){
     console.log(msg);
     result(null, msg)
   }
+}
+
+async function hashMDP(password, callback){
+  const salt = await bcrypt.genSalt(6);
+  const hashed = await bcrypt.hash(password, salt);
+   callback({hashedPassword:hashed});
+}
+
+async function compareHashedMDP(hashedPassword, password, callback){
+  const validPassword = await bcrypt.compare(password, hashedPassword);
+  callback({passwordIsValid: validPassword})
 }
 
 export default users;

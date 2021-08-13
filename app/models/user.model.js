@@ -116,6 +116,25 @@ User.getAllWithProfiles = result => {
   });
 };
 
+User.getPassword = (email, result) => {
+  sql.query(`select password, profile_id from users u join user_profile up on u.id = up.user_id where u.email = '${email}'`, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(null, err);
+      return;
+    }
+
+    if (res.length) {
+      console.log("found user: ", res[0]);
+      result(null, res[0]);
+      return;
+    }
+
+    // not found User with the id
+    result({ kind: "not_found" }, null);
+  });
+};
+
 User.getAllUserProfiles = result => {
   sql.query("SELECT * FROM profile", (err, res) => {
     if (err) {

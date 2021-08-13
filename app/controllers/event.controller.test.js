@@ -1,6 +1,5 @@
 import eventController from "./event.controller.js";
 import event from "../models/event.model.js";
-import sql from "../models/db.js"
 
 const mockRequest = () => {
     const req = {}
@@ -25,7 +24,7 @@ describe('Test create into event controller :', () => {
     beforeEach(()=>{
         event.mockClear();
     });
-    test('Testing 404 error has been called :', () => {
+    test('Testing 400 error has been called :', () => {
         let req = mockRequest();
         req.body = null;
         const res = mockResponse();
@@ -36,6 +35,7 @@ describe('Test create into event controller :', () => {
 
     test('Testing create model has been called', async() => {
         let req = mockRequest();
+        req.body.event = "{}";
         const res = mockResponse();
         const result = eventController.create(req,res);
         expect(event.create).toHaveBeenCalled();

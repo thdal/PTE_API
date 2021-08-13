@@ -24,6 +24,7 @@ installer jest, profil config ecmascript type: module, installer babel : npm add
 
 et renommer le fichier babel.config.js en babel.config.cjs
 
+lancer les tests avec npm run test
 
 Forever: 
 
@@ -32,3 +33,16 @@ Tuto forever https://blog.bini.io/faire-tourner-une-application-node-js-en-perma
 lancer avec forever
 
 forever start --uid "custom-name" server.js prod
+
+//Objet admin
+
+{
+"firstName": "admin",
+"lastName": "admin",
+"profile_id": 3,
+"email": "admin@epsi.fr",
+"password": "adminadmin",
+"genre_id": 2,
+"userImg": false,
+"isBanned": false
+}
