@@ -6,13 +6,12 @@ Lien vers l'API en ligne : https://pte-epsi.thibaut-dalens.com:3000/
 Pour tester l'API en local :
 
 1. Installer MySQL
-2. Créer une base de données
-3. Configurer la connexion dans le fichier /app/config/db.config.js
-4. Passer le fichier DML suivant /sql/PTE_SQL_DML.sql
-5. Passer le fichier DDL suivant /sql/PTE_SQL_DDL.sql
-6. lancer le serveur avec la commande node server.js
+2. Configurer la connexion dans le fichier /app/config/db.config.js
+3. Passer le fichier DML suivant /sql/PTE_SQL_DML.sql
+4. Passer le fichier DDL suivant /sql/PTE_SQL_DDL.sql
+5. lancer le serveur avec la commande node server.js
 
-Installation de bcrypt pour le hash des mots de passe :
+Installation de bcrypt pour le hach des mots de passe :
 
 1. npm i bcrypt
 
@@ -21,7 +20,7 @@ Pour les tests avec Jest (mock) :
 1. npm i jest 
 2. npm add --dev babel-jest @babel/core @babel/preset-env
 3. Renommer le fichier babel.config.js en babel.config.cjs
-4. Lancer les tests avec npm run test
+4. Lancer les tests avec la commande npm run test
 
 Commandes Forever ( Lance node en tant que service sur le serveur ) : 
 
