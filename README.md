@@ -1,4 +1,4 @@
-![alt text](https://github.com/thdal/PTE_API/blob/ec72051e417147d852c788e5152f36d7ad08f0b1/model.png)
+![alt text](https://github.com/thdal/PTE_API/blob/main/model.png)
 
 Lien vers l'API en ligne : https://pte-epsi.thibaut-dalens.com:3000/
 
