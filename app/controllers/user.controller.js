@@ -7,6 +7,8 @@ import bcrypt from 'bcrypt';
 const users = {
   // Create and Save a new User
   create(req, res){
+    console.log("coucouCreate");
+    console.log(req.body);
     // Validate request
     if (!req.body) {
       res.status(400).send({
@@ -100,12 +102,12 @@ const users = {
       password: req.body.password
     });
 
-    //On vérifie qu'un mot de passe existe pour cet email en base
+    //On vérifie que le mail existe en base
     User.getPassword(req.body.email, (errPW,dataPW)=>{
       if (errPW) {
           if (errPW.kind === "not_found") {
             res.status(404).send({
-              message: `Email invalid.`
+              message: `Email invalide.`
             });
           }else{
             res.status(500).send({
@@ -138,7 +140,7 @@ const users = {
           //Si non le mot de passe ne correspond pas
           else{
             res.status(404).send({
-              message: `Invalid password.`
+              message: `Password invalide.`
             });
           }
         });

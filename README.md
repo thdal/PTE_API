@@ -1,48 +1,31 @@
 ![alt text](https://github.com/thdal/PTE_API/blob/ec72051e417147d852c788e5152f36d7ad08f0b1/model.png)
 
-Pour tester l'API à ce stade :
-
-1 Installer MySQL
-
-2 Creer une base de donnée et créer la table "users" (je vais faire un script pour créer tout)
-
-3 Configurer le fichier app/config/db.config.js pour votre connexion
-
-installer cors
-
-4 Lancer l'API avec node server.js
-
-5 Tester les routes du fichier routes/app.routes.js
+Lien vers l'API en ligne : https://pte-epsi.thibaut-dalens.com:3000/
 
 
-Je me suis basé sur ce modéle : https://bezkoder.com/node-js-rest-api-express-mysql/
+Pour tester l'API en local :
 
+1. Installer MySQL
+2. Créer une base de données
+3. Configurer la connexion dans le fichier /app/config/db.config.js
+4. Passer le fichier DML suivant /sql/PTE_SQL_DML.sql
+5. Passer le fichier DDL suivant /sql/PTE_SQL_DDL.sql
+6. lancer le serveur avec la commande node server.js
 
-Pour Jest :
+Installation de bcrypt pour le hash des mots de passe :
 
-installer jest, profil config ecmascript type: module, installer babel : npm add --dev babel-jest @babel/core @babel/preset-env
+1. npm i bcrypt
 
-et renommer le fichier babel.config.js en babel.config.cjs
+Pour les tests avec Jest (mock) :
 
-lancer les tests avec npm run test
+1. npm i jest 
+2. npm add --dev babel-jest @babel/core @babel/preset-env
+3. Renommer le fichier babel.config.js en babel.config.cjs
+4. Lancer les tests avec npm run test
 
-Forever: 
+Commandes Forever ( Lance node en tant que service sur le serveur ) : 
 
-Tuto forever https://blog.bini.io/faire-tourner-une-application-node-js-en-permanence-avec-forever/
-
-lancer avec forever
-
-forever start --uid "custom-name" server.js prod
-
-//Objet admin
-
-{
-"firstName": "admin",
-"lastName": "admin",
-"profile_id": 3,
-"email": "admin@epsi.fr",
-"password": "adminadmin",
-"genre_id": 2,
-"userImg": false,
-"isBanned": false
-}
+forever list\
+forever stopall\
+forever start --uid "custom-name" server.js prod\
+forever restart ID //ID peut être l'id le uid ou le pid
