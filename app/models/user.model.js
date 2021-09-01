@@ -53,7 +53,7 @@ User.updateUserProfile = (userId, profileId, result) => {
 };
 
 User.login = (userTmp, result) => {
-  sql.query(`SELECT id, firstName, email, userImg, genre_id, up.profile_id FROM users JOIN user_profile up on up.user_id = users.id WHERE email = '${userTmp.email}' AND password = '${userTmp.password}' `, (err, res) => {
+  sql.query(`SELECT id, firstName, lastName, email, userImg, genre_id, up.profile_id FROM users JOIN user_profile up on up.user_id = users.id WHERE email = '${userTmp.email}' AND password = '${userTmp.password}' `, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);

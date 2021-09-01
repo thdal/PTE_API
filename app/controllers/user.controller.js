@@ -7,8 +7,6 @@ import bcrypt from 'bcrypt';
 const users = {
   // Create and Save a new User
   create(req, res){
-    console.log("coucouCreate");
-    console.log(req.body);
     // Validate request
     if (!req.body) {
       res.status(400).send({
@@ -265,7 +263,6 @@ const users = {
         message: "Content can not be empty!"
       });
     }
-
     User.updateUserProfile(req.params.userId, req.body.profileId, (err, data) => {
           if (err) {
             if (err.kind === "not_found") {

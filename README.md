@@ -2,6 +2,14 @@
 
 Lien vers l'API en ligne : https://pte-epsi.thibaut-dalens.com:3000/
 
+Structure générale :
+
+Le point d'entrée de notre api est le fichier server.js à la racine de notre dossier, le fichier server.js fait un import de app.js qui fait la configuration d'express. 
+
+Le chemin du fichier de configuration des routes de notre api est le suivant /app/routes/app.routes.js .
+
+Commande pour lancer le serveur nodejs en local : node server.js \
+Commande pour lancer le serveur nodejs en production : node server.js prod
 
 Pour tester l'API en local :
 

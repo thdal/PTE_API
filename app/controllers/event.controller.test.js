@@ -17,7 +17,7 @@ const mockResponse = () => {
 }
 //Mock du fichier model
 jest.mock('../models/event.model.js');
-//Mock de la connexion à la base de données
+//Mock de la Connexion à la base de données
 jest.mock('../models/db.js', ()=>{
     return jest.fn();
 });

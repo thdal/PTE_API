@@ -1,10 +1,10 @@
-//const sql = require("./db.js");
 import sql from "./db.js"
 
 // constructor
 const Event = function(event) {
     this.eventName = event.eventName;
     this.eventDate = event.eventDate;
+    this.eventHour = event.eventHour;
     this.eventLink = event.eventLink;
     this.eventAddress = event.eventAddress;
     this.eventDescription = event.eventDescription;
@@ -15,8 +15,8 @@ const Event = function(event) {
 };
 
 Event.create = (newEvent, result) => {
-    let reqSql = "INSERT INTO evenements (eventName, eventDate, eventLink, eventAddress, eventDescription, typeEventId, canalEventId, userId, eventImg) VALUES ? ";
-    let record = [[newEvent.eventName, newEvent.eventDate, newEvent.eventLink, newEvent.eventAddress, newEvent.eventDescription, newEvent.typeEventId, newEvent.canalEventId, newEvent.userId, newEvent.eventImg]];
+    let reqSql = "INSERT INTO evenements (eventName, eventDate, eventHour, eventLink, eventAddress, eventDescription, typeEventId, canalEventId, userId, eventImg) VALUES ? ";
+    let record = [[newEvent.eventName, newEvent.eventDate, newEvent.eventHour, newEvent.eventLink, newEvent.eventAddress, newEvent.eventDescription, newEvent.typeEventId, newEvent.canalEventId, newEvent.userId, newEvent.eventImg]];
     sql.query(reqSql, [record] , (err, res) => {
         if (err) {
             console.log("error: ", err);
@@ -86,8 +86,8 @@ Event.getAllWithDateByUser = (objDates, userId, result) => {
 
 Event.updateById = (id, event, result) => {
     sql.query(
-        "UPDATE evenements SET eventName = ?, eventDate = ?, eventLink = ?, eventAddress = ?, eventDescription = ?, typeEventId = ?, canalEventId = ?, eventImg = ? WHERE id = ?",
-        [event.eventName, event.eventDate, event.eventLink, event.eventAddress, event.eventDescription, event.typeEventId, event.canalEventId, event.eventImg, id],
+        "UPDATE evenements SET eventName = ?, eventDate = ?, eventHour = ?, eventLink = ?, eventAddress = ?, eventDescription = ?, typeEventId = ?, canalEventId = ?, eventImg = ? WHERE id = ?",
+        [event.eventName, event.eventDate, event.eventHour, event.eventLink, event.eventAddress, event.eventDescription, event.typeEventId, event.canalEventId, event.eventImg, id],
         (err, res) => {
             if (err) {
                 console.log("error: ", err);
@@ -263,6 +263,21 @@ Event.remove = (id, result) => {
         }
 
         console.log("deleted event with id: ", id);
+        result(null, res);
+    });
+};
+
+Event.getWithWord = (word, result) => {
+    var word =  word;
+    sql.query(`SELECT * FROM evenements where eventName LIKE '%${word}%'`, (err, res) => {
+        console.log(`SELECT * FROM evenements where eventName LIKE '%${word}%'`);
+        if (err) {
+            console.log("error: ", err);
+            result(null, err);
+            return;
+        }
+
+        console.log("found evenements with word : ", res.length, " événements");
         result(null, res);
     });
 };

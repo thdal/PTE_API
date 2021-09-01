@@ -12,6 +12,7 @@ const events = {
             });
             return;
         }
+        //return;
 
         var eventJson = JSON.parse(req.body.event)//On récupére le json du formData
 
@@ -19,6 +20,7 @@ const events = {
         const event = new Event({
             eventName: eventJson.eventName,
             eventDate: eventJson.eventDate,
+            eventHour: eventJson.eventHour,
             eventLink: eventJson.eventLink,
             eventAddress: eventJson.eventAddress,
             eventDescription: eventJson.eventDescription,
@@ -358,6 +360,34 @@ const events = {
                     }
                 });
                 res.send({ message: `Event was deleted successfully!` });
+            }
+        });
+    },
+
+    findWithWord(req, res){
+        if (!req.body.word) {
+            res.status(400).send({
+                message: "Word shouldn't be null!"
+            });
+            return;
+        }
+
+        var word = req.body.word;
+
+        Event.getWithWord(word, (err, data) => {
+            if (err) {
+                if (err.kind === "not_found") {
+                    res.status(404).send({
+                        message: `Not found event with word.`
+                    });
+                } else {
+                    res.status(500).send({
+                        message:
+                            err.message || "Some error occurred while retrieving events with word."
+                    });
+                }
+            }else {
+                res.send(data);
             }
         });
     },
